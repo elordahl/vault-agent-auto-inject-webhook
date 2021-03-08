@@ -40,6 +40,7 @@ type webhookCfg struct {
 	annotationPrefix     string
 	targetVaultAddress   string
 	kubernetesAuthPath   string
+	vaultImageName       string
 	vaultImageVersion    string
 	defaultConfigMapName string
 	cpuRequest           string
@@ -220,7 +221,7 @@ func injectVaultSidecar(_ context.Context, obj metav1.Object) (bool, error) {
 	if injectionMode == sidecarInjectionMode {
 		pod.Spec.Containers = append(pod.Spec.Containers, corev1.Container{
 			Name:  "vault-agent",
-			Image: "vault:" + cfg.vaultImageVersion,
+			Image: cfg.vaultImageName + ":" + cfg.vaultImageVersion,
 			Args: []string{
 				"agent",
 				"-config=/etc/vault/vault-agent-config.hcl",
@@ -240,7 +241,7 @@ func injectVaultSidecar(_ context.Context, obj metav1.Object) (bool, error) {
 	} else if injectionMode == initContainerInjectionMode {
 		pod.Spec.InitContainers = append(pod.Spec.InitContainers, corev1.Container{
 			Name:  "vault-agent",
-			Image: "vault:" + cfg.vaultImageVersion,
+			Image: cfg.vaultImageName + ":" + cfg.vaultImageVersion,
 			Args: []string{
 				"agent",
 				"-config=/etc/vault/vault-agent-config.hcl",
@@ -280,6 +281,7 @@ func main() {
 	fl.StringVar(&cfg.annotationPrefix, "annotation-prefix", "vault.patoarvizu.dev", "Prefix of the annotations the webhook will process")
 	fl.StringVar(&cfg.targetVaultAddress, "target-vault-address", "https://vault:8200", "Address of remote Vault API")
 	fl.StringVar(&cfg.kubernetesAuthPath, "kubernetes-auth-path", "auth/kubernetes", "Path to Vault Kubernetes auth endpoint")
+	fl.StringVar(&cfg.vaultImageName, "vault-image-name", "vault", "'vault' Docker image to inject with the sidecar")
 	fl.StringVar(&cfg.vaultImageVersion, "vault-image-version", "1.3.0", "Tag on the 'vault' Docker image to inject with the sidecar")
 	fl.StringVar(&cfg.gomplateImage, "gomplate-image", "hairyhenderson/gomplate:v3", "The full name (repository and tag) of the gomplate image for the init container")
 	fl.StringVar(&cfg.defaultConfigMapName, "default-config-map-name", "vault-agent-config", "The name of the ConfigMap to be used for the Vault agent configuration by default, unless overwritten by annotation")

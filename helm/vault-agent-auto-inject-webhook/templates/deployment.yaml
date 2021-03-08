@@ -20,7 +20,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
       - name: vault-agent-webhook
-        image: patoarvizu/vault-agent-auto-inject-webhook:{{ .Values.imageVersion }}
+        image: {{ .Values.imageName }}:{{ .Values.imageVersion }}
         command:
         - /vault-agent-auto-inject-webhook
         - -tls-cert-file
@@ -29,6 +29,8 @@ spec:
         - {{ .Values.tls.mountPath }}/tls.key
         - -ca-cert-secret-name
         - {{ .Values.flags.caCertSecretName }}
+        - -vault-image-name
+        - {{ .Values.flags.vaultImageName }}
         - -vault-image-version
         - {{ .Values.flags.vaultImageVersion }}
         - -annotation-prefix

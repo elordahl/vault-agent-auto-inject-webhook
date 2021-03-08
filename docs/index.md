@@ -27,6 +27,7 @@ Vault agent auto-inject webhook
 | flags.resources.requests.cpu | string | `"50m"` | The value to be set on the `-cpu-request` flag. |
 | flags.resources.requests.memory | string | `"128Mi"` | The value to be set on the `-memory-request` flag. |
 | flags.targetVaultAddress | string | `nil` | The value to be set on the `-target-vault-address` flag. If not specified, it will default to https://vault.{{ .Release.Namespace }}:8200. |
+| flags.vaultImageName | string | `"vault"` | The value to be set on the `-vault-image-name` flag. |
 | flags.vaultImageVersion | string | `"1.4.0"` | The value to be set on the `-vault-image-version` flag. |
 | hpa.apiVersion | string | `"autoscaling/v2beta2"` | The `apiVersion` of the `HorizontalPodAutoscaler` to create. The metrics configuration options vary depending on this value. |
 | hpa.enable | bool | `false` | Create a `HorizontalPodAutoscaler` object to control dynamic replication of the webhook. If this is set to `false`, all values under `hpa` are ignored. |
@@ -34,6 +35,7 @@ Vault agent auto-inject webhook
 | hpa.metricsScalingConfiguration | list | `[{"resource":{"name":"cpu","target":{"averageUtilization":80,"type":"Utilization"}},"type":"Resource"}]` | The scaling configuration to be injected directly into the `HorizontalPodAutoscaler` object. |
 | hpa.minReplicas | int | `3` | The minimum number of replicas to attempt to maintain at all times. |
 | imagePullPolicy | string | `"IfNotPresent"` | The imagePullPolicy to be used on the webhook. |
+| imageName | string | `"patoarvizu/vault-agent-auto-inject-webhook"` | The image used for the webhook. |
 | imageVersion | string | `"v0.5.0"` | The image version used for the webhook. |
 | namespaceSelector | object | `{"matchExpressions":[{"key":"vault-control-plane","operator":"DoesNotExist"}]}` | A label selector expression to determine what namespaces should be in scope for the mutating webhook. |
 | podDisruptionBudget.availability.maxUnavailable | int | `0` | The default availability is set to `maxUnavailable: 0` (if `podDisruptionBudget.enable` is `true`). |
